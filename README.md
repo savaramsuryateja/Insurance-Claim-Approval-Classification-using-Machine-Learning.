@@ -1,159 +1,291 @@
 # Insurance Claim Approval Classification using Machine Learning
 
-## Project Overview
+This project develops and evaluates machine learning models to predict **insurance claim approval outcomes** using healthcare, demographic, and insurance-related variables from the **Medical Expenditure Panel Survey (MEPS)** dataset.
 
-This project develops a machine learning system to predict whether an insurance claim will be **approved or rejected** based on customer, policy, and health-related attributes.
-
-Insurance companies process thousands of claims every day, and manual decision-making can be time-consuming and inconsistent. By applying machine learning techniques, this project aims to assist insurance providers in automating claim approval predictions and identifying the most influential factors that affect approval outcomes.
-
-The study compares several classification algorithms and evaluates their performance using multiple evaluation metrics.
+The study compares multiple classification models and applies careful preprocessing, including **data leakage removal**, to ensure realistic and reliable model evaluation.
 
 ---
 
-# Project Objectives
+## Project Objective
 
-The key objectives of this project are:
+The main goal of this project is to investigate whether machine learning models can accurately predict insurance claim approval decisions and identify which model performs best for this task.
 
-* To build machine learning models capable of predicting insurance claim approval outcomes.
-* To compare the predictive performance of multiple classification algorithms.
-* To identify the most influential features affecting insurance claim approval decisions.
-* To evaluate models using standard classification metrics such as Accuracy, Precision, Recall, F1 Score, and ROC-AUC.
+This project focuses on:
 
----
-
-# Dataset Description
-
-The dataset contains information related to insurance policyholders, healthcare utilisation, and expenditure attributes.
-
-Typical variables include:
-
-* Age
-* Gender
-* Income level
-* Health status
-* Insurance coverage type
-* Healthcare utilisation indicators
-* Medical expenditure variables
-* Demographic information
-
-The target variable created for this project is:
-
-**CLAIM_APPROVED**
-
-Where:
-
-* **1 = Claim Approved**
-* **0 = Claim Rejected**
+- Building a binary classification pipeline for claim approval prediction
+- Comparing the performance of multiple machine learning models
+- Preventing data leakage for trustworthy evaluation
+- Analysing feature importance and prediction behaviour
+- Demonstrating how machine learning can support insurance decision systems
 
 ---
 
-# Machine Learning Workflow
+## Research Questions
 
-The project follows a structured machine learning pipeline:
-
-### 1 Data Pre-processing
-
-* Removal of leakage-related variables
-* Handling missing values using median imputation
-* Selection of numeric features
-* Train–test split
-
-### 2 Feature Engineering
-
-* Identification of relevant attributes
-* Removal of identifier variables
-* Prevention of target leakage
-
-### 3 Model Development
-
-Four machine learning classification algorithms were implemented:
-
-* Logistic Regression
-* Random Forest
-* Gradient Boosting
-* Neural Network (MLPClassifier)
-
-### 4 Model Evaluation
-
-Models were evaluated using:
-
-* Accuracy
-* Precision
-* Recall
-* F1 Score
-* ROC-AUC Score
-* Confusion Matrix
-* ROC Curve Analysis
+1. Can machine learning models accurately predict insurance claim approval outcomes?
+2. Which classification algorithm performs best among **Support Vector Machine (SVM)**, **Gradient Boosting**, and **Neural Network**?
+3. Which features most strongly influence claim approval predictions?
+4. How does strict preprocessing and leakage removal improve model reliability?
 
 ---
 
-# Model Performance Comparison
+## Dataset
 
-| Model                | Accuracy   | AUC-ROC    | F1 Score   | Precision  | Recall     |
-| -------------------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-| Random Forest        | 0.8828     | **0.9405** | 0.8867     | 0.8927     | 0.8828     |
-| Gradient Boosting    | **0.8848** | 0.9394     | **0.8882** | **0.8933** | **0.8848** |
-| Neural Network (MLP) | 0.8802     | 0.9378     | 0.8834     | 0.8880     | 0.8802     |
-| Logistic Regression  | 0.8741     | 0.9364     | 0.8703     | 0.8679     | 0.8741     |
+**Dataset Name:** Medical Expenditure Panel Survey (MEPS)  
+**Source:** Agency for Healthcare Research and Quality (AHRQ), U.S. Department of Health and Human Services  
+**Type:** Structured tabular dataset  
+**Link:** https://meps.ahrq.gov/data_stats/download_data_files.jsp
 
----
+### Dataset Characteristics
 
-# Best Performing Model
+The dataset contains healthcare and insurance-related information, including:
 
-The **Random Forest classifier** achieved the highest **ROC-AUC score (0.9405)**, indicating the strongest ability to distinguish between approved and rejected insurance claims.
+- Demographic attributes
+- Insurance coverage details
+- Socio-economic indicators
+- Healthcare utilisation variables
+- Medical expenditure-related variables
 
-Although Gradient Boosting slightly outperformed other models in Accuracy and F1 Score, Random Forest was selected as the best overall model due to its superior discriminative performance and robustness.
-
----
-
-# Key Visualisations
-
-The project includes several analytical visualisations such as:
-
-* Model comparison bar charts
-* ROC curve analysis
-* Confusion matrix visualisation
-* Feature importance ranking
-
-These visualisations help interpret model behaviour and highlight important predictors influencing claim approval.
+In this project, selected variables were extracted from the MEPS file and renamed for easier interpretation.
 
 ---
 
-# Feature Importance Analysis
+## Selected Features
 
-Feature importance analysis was performed using the Random Forest model to identify the variables that most strongly influence claim approval decisions.
+The notebook uses the following core variables:
 
-This analysis helps insurance companies understand which attributes contribute most to claim approval outcomes and supports more transparent decision-making.
+- **AGE**
+- **SEX**
+- **RACE**
+- **INCOME_PCT_FPL**
+- **INSURANCE_TYPE**
+- **TOTAL_EXPENDITURE**
+- **EMPLOYED**
+- **EDUCATION**
+- **REGION**
+- **NUM_VISITS**
 
 ---
 
-# Technologies and Tools Used
+## Target Variable Engineering
 
-The following tools and technologies were used in this project:
+A binary target variable called **`CLAIM_APPROVED`** was created.
 
-Programming Language:
+The target was defined using insurer-related payment/expenditure logic to simulate whether a claim was approved. This transforms the problem into a **binary classification task**:
 
-* Python
+- `1` = Claim approved
+- `0` = Claim not approved
 
-Data Processing:
+---
 
-* Pandas
-* NumPy
+## Data Preprocessing
 
-Machine Learning:
+The notebook includes an end-to-end preprocessing pipeline designed to improve data quality and prevent unrealistic model performance.
 
-* Scikit-Learn
+### Steps performed
 
-Data Visualisation:
+- Imported and loaded the raw MEPS `.dta` dataset
+- Selected claim-relevant variables from the original file
+- Renamed columns for readability
+- Replaced MEPS negative codes (such as `-1`, `-7`, `-8`, `-9`) with missing values
+- Removed duplicate rows
+- Dropped rows with excessive missing values
+- Imputed missing numerical values using the **median**
+- Imputed missing categorical values using the **mode**
+- Engineered the binary target variable **`CLAIM_APPROVED`**
+- Performed **data leakage removal** by dropping variables directly revealing outcomes
+- Applied encoding where needed
+- Split the dataset into training and testing sets
 
-* Matplotlib
-* Seaborn
+### Leakage Control
 
-Development Environment:
+A key strength of this project is the removal of leakage-related variables.  
+Variables containing patterns such as:
 
-* Jupyter Notebook
+- `EXP`
+- `PAY`
+- `CHG`
+- `CHARGE`
+- `PMT`
+- `PRPAY`
+- `MCDPAY`
+- `PRVPAY`
 
-Version Control:
+were removed because they can directly reveal the target outcome and lead to artificially inflated performance.
 
-* GitHub
+---
 
+## Exploratory Data Analysis (EDA)
+
+The notebook includes exploratory analysis to understand the dataset before modelling.
+
+### EDA covered
+
+- Class distribution of claim approval
+- Age distribution by approval class
+- Relationship between insurance type and approval
+- Approval rate by income category
+- Distribution of expenditure using log transformation
+
+These visualisations help identify patterns in healthcare utilisation, demographic variation, and approval outcomes.
+
+---
+
+## Models Implemented
+
+The following machine learning models were implemented and evaluated:
+
+### 1. Support Vector Machine (SVM)
+Used as a strong baseline classifier for structured data classification.
+
+### 2. Gradient Boosting Classifier
+Used to capture non-linear relationships and improve predictive performance through boosting.
+
+### 3. Deep Neural Network
+A feedforward neural network built using **TensorFlow/Keras** with:
+
+- Input layer
+- Dense hidden layers
+- Dropout regularisation
+- Sigmoid output layer for binary classification
+
+---
+
+## Model Evaluation Metrics
+
+The models were evaluated using the following classification metrics:
+
+- **Accuracy**
+- **Precision**
+- **Recall**
+- **F1 Score**
+- **ROC-AUC**
+
+These metrics provide a more complete evaluation than accuracy alone, especially for classification tasks with class imbalance.
+
+---
+
+## Model Performance
+
+Based on the notebook output, the model comparison results are:
+
+| Model | Accuracy | Precision | Recall | F1 Score | ROC-AUC |
+|------|---------:|----------:|-------:|---------:|--------:|
+| Gradient Boosting | 0.8868 | 0.8907 | 0.8868 | 0.8886 | 0.9439 |
+| Neural Network | 0.8835 | 0.8833 | 0.8835 | 0.8834 | 0.9432 |
+| SVM | 0.8470 | 0.8215 | 0.8470 | 0.8206 | 0.9184 |
+
+### Best Model
+The **Gradient Boosting model** achieved the best overall performance, with the highest:
+
+- Accuracy
+- Precision
+- F1 Score
+- ROC-AUC
+
+This suggests that ensemble methods are highly effective for insurance claim approval classification on structured healthcare data.
+
+---
+
+## Feature Importance
+
+Feature importance analysis was performed using the **Gradient Boosting model**.
+
+The results indicate that **healthcare visits** were the most influential predictor, followed by other variables such as:
+
+- Age
+- Insurance type
+- Race
+- Education
+- Region
+
+This shows that both **healthcare utilisation** and **demographic factors** play an important role in predicting claim approval outcomes.
+
+---
+
+## Actual vs Predicted Analysis
+
+The notebook also includes a comparison of **actual vs predicted values** for the Neural Network model.
+
+This helps to:
+
+- Inspect prediction correctness
+- Review approval probabilities
+- Understand where the model makes correct and incorrect classifications
+
+A sample output table is included in the notebook showing:
+
+- Actual class
+- Predicted class
+- Probability of approval
+- Whether the prediction is correct
+
+---
+
+## Visualisations Included
+
+The notebook contains the following visual outputs:
+
+- EDA plots
+- Confusion matrices
+- ROC curves
+- Model comparison charts
+- Feature importance plot
+- Actual vs predicted sample table
+
+These visualisations make the results easier to interpret and communicate.
+
+---
+
+## Project Workflow
+
+The end-to-end workflow of the project is:
+
+1. Load raw MEPS dataset  
+2. Select relevant variables  
+3. Clean and preprocess the data  
+4. Engineer target variable  
+5. Remove leakage-related features  
+6. Perform exploratory data analysis  
+7. Split data into train and test sets  
+8. Train machine learning models  
+9. Evaluate model performance  
+10. Compare models  
+11. Analyse feature importance  
+12. Review prediction behaviour  
+
+---
+
+## Key Findings
+
+- Machine learning models can effectively predict insurance claim approval outcomes
+- Ensemble methods outperform the baseline SVM model
+- Gradient Boosting achieved the strongest overall results
+- Removing leakage-related variables is critical for realistic evaluation
+- Healthcare utilisation variables appear to be highly predictive
+- The project demonstrates the practical value of ML in insurance decision support
+
+---
+
+## Limitations
+
+- The target variable is engineered rather than directly observed as a real insurer approval label
+- The project uses selected variables rather than the entire MEPS feature space
+- Additional tuning and validation could further improve model robustness
+
+---
+
+## Future Work
+
+Possible future improvements include:
+
+- Hyperparameter tuning using Grid Search or Random Search
+- k-fold cross-validation
+- Testing advanced ensemble models such as XGBoost or LightGBM
+- More detailed feature engineering
+- Fairness analysis across demographic groups
+- Deployment as a real-time decision-support system using Azure Machine Learning or FastAPI
+
+---
+
+pip install pandas numpy matplotlib seaborn scikit-learn tensorflow
